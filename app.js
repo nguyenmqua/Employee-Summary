@@ -1,6 +1,7 @@
 const Manager = require("./lib/Manager");
 const Engineer = require("./lib/Engineer");
 const Intern = require("./lib/Intern");
+
 const inquirer = require("inquirer");
 const path = require("path");
 const fs = require("fs");
@@ -127,10 +128,9 @@ function engineerPrompt(){
 async function intern(){
   try {
   const intern = await internPrompt()
+  const internInfo = new Intern(intern.internName, intern.internId, intern.internEmail, intern.school)
+  employees.push(internInfo)  
   add(intern.add)
-  employees.push(intern)
-  console.log(employees)
-  
   }
   catch(err) {
     console.log(err);
@@ -140,17 +140,28 @@ async function intern(){
 async function engineer(){
   try {
   const engineer = await engineerPrompt()
+  const engineerInfo = new Engineer(engineer.engineerName, engineer.engineerId, engineer.engineerEmail, engineer.github)
+  employees.push(engineerInfo) 
   add(engineer.add)
-  employees.push(engineer)
-  console.log(employees) 
   }
   catch(err) {
     console.log(err);
   }
 }
 
-function doneAdding(){
-  render(employees)
+async function doneAdding(){
+  try {
+    const data = await render(employees) 
+  fs.writeFile(outputPath, data, "utf8", function(err){
+    if (err){
+      return console.log(err);
+    }
+    console.log("File Appended")
+  });
+}
+catch(err) {
+  console.log(err);
+}
 }
 
 function add(add){
@@ -167,11 +178,12 @@ function add(add){
   } 
 }
 
-async function init() {
+async function init(){
     try {
       const manager = await promptUser();
       add(manager.add)
-      employees.push(manager)
+      const managerInfo = new Manager(manager.managerName, manager.managerId, manager.managerEmail, manager.github)
+      employees.push(managerInfo)
     } catch(err) {
       console.log(err);
     }
