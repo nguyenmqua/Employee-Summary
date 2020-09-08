@@ -187,7 +187,7 @@ async function init(){
     } catch(err) {
       console.log(err);
     }
-  }
+}
  
   init()
 // Write code to use inquirer to gather information about the development team members,
